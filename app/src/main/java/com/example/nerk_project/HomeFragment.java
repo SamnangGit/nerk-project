@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.nerk_project.databinding.FragmentHomeBinding;
 import com.example.nerk_project.databinding.FragmentLoginBinding;
 import com.example.nerk_project.databinding.InputTodoLayoutBinding;
+import com.example.nerk_project.databinding.UpdateTodoLayoutBinding;
 import com.example.nerk_project.model.ToDoModel;
 
 import java.util.ArrayList;
@@ -31,7 +32,8 @@ import java.util.ArrayList;
  */
 public class HomeFragment extends Fragment {
 
-
+    InputTodoLayoutBinding inputBinding;
+    UpdateTodoLayoutBinding updateBinding;
     ListView listView;
     private static CustomAdapter adapter;
     ArrayList<ToDoModel> dataModels;
@@ -84,17 +86,6 @@ public class HomeFragment extends Fragment {
         // 2- Data source
         dataModels = new ArrayList<>();
 
-//        dataModels.add(new ToDoModel("6:15am", "Go shopping"));
-//        dataModels.add(new ToDoModel("8:15am", "Go eating"));
-//        dataModels.add(new ToDoModel("10:15am", "Go joking"));
-//        dataModels.add(new ToDoModel("12:15am", "Go working"));
-//        dataModels.add(new ToDoModel("4:15am", "Go for a walk"));
-
-        // 3- Adapter
-//        adapter = new CustomAdapter(dataModels, getActivity().getApplicationContext());
-//
-//        binding.listViewTodo.setAdapter(adapter);
-
         return binding.getRoot();
 
     }
@@ -111,7 +102,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void todoOperation(){
-        InputTodoLayoutBinding inputBinding = InputTodoLayoutBinding.inflate(getLayoutInflater());
+        inputBinding = InputTodoLayoutBinding.inflate(getLayoutInflater());
 
         new AlertDialog.Builder(getContext())
                 .setTitle("Enter Task")
@@ -119,13 +110,7 @@ public class HomeFragment extends Fragment {
                 .setPositiveButton("Set", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
-                        binding.listViewTodo.setAdapter(adapter);
-                        dataModels.add(new ToDoModel(inputBinding.edtTime.getText().toString(), inputBinding.edtTitle.getText().toString()));
-
-                        // 3- Adapter
-                        adapter = new CustomAdapter(dataModels, getActivity().getApplicationContext());
-                        binding.listViewTodo.setAdapter(adapter);
+                        setListItem(inputBinding.edtTime.getText().toString(), inputBinding.edtTitle.getText().toString());
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -135,6 +120,51 @@ public class HomeFragment extends Fragment {
                     }
                 })
                 .create().show();
+    }
+
+    private void setListItem(String time, String title){
+
+        binding.listViewTodo.setAdapter(adapter);
+        dataModels.add(new ToDoModel(time, title));
+
+        // 3- Adapter
+        adapter = new CustomAdapter(dataModels, getActivity().getApplicationContext());
+        binding.listViewTodo.setAdapter(adapter);
+
+        binding.listViewTodo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String time = adapter.getItem(i).getTime();
+                String title = adapter.getItem(i).getTitle();
+
+//                Log.d("item", dataModels.get(i).getTime());
+
+                updateBinding = UpdateTodoLayoutBinding.inflate(getLayoutInflater());
+
+                updateBinding.edtTimeUpdate.setText(time);
+                updateBinding.edtTitleUpdate.setText(title);
+
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Update Task")
+                        .setView(updateBinding.getRoot())
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int ind) {
+                                dataModels.remove(i);
+                                adapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton("Update", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int ind) {
+                                dataModels.set(i, new ToDoModel(updateBinding.edtTimeUpdate.getText().toString(),
+                                                                updateBinding.edtTitleUpdate.getText().toString()));
+                                adapter.notifyDataSetChanged();
+                            }
+                        })
+                        .create().show();
+            }
+        });
     }
 
 }
