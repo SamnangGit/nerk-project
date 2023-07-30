@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -21,10 +22,26 @@ import com.example.nerk_project.databinding.FragmentLoginBinding;
 import com.example.nerk_project.databinding.InputTodoLayoutBinding;
 import com.example.nerk_project.databinding.UpdateTodoLayoutBinding;
 import com.example.nerk_project.model.ToDoModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -33,6 +50,9 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
+
+    private FirebaseDatabase database;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     InputTodoLayoutBinding inputBinding;
     UpdateTodoLayoutBinding updateBinding;
@@ -88,6 +108,13 @@ public class HomeFragment extends Fragment {
         // 2- Data source
         dataModels = new ArrayList<>();
 
+//        retrieveFirebaseData(dataModels);
+//        getFirebaseData();
+        fecthData(dataModels);
+        Log.d("dataModel", "amount");
+        Log.d("dataModel", Integer.toString(dataModels.size()));
+
+
         return binding.getRoot();
 
     }
@@ -113,7 +140,20 @@ public class HomeFragment extends Fragment {
                 .setPositiveButton("Set", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        setListItem(inputBinding.edtTime.getText().toString(), inputBinding.edtTitle.getText().toString());
+                        String time = inputBinding.edtTime.getText().toString();
+                        String title = inputBinding.edtTitle.getText().toString();
+                        setListItem(time, title);
+
+                        Gson gson = new Gson();
+                        String json = gson.toJson(dataModels);
+                        database = FirebaseDatabase.getInstance();
+                        database.getReference()
+                                .child("users")
+                                .child(user.getUid())
+                                .child("123456")
+                                .child("todos")
+//                                .push()
+                                .setValue(json);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -168,6 +208,145 @@ public class HomeFragment extends Fragment {
                         .create().show();
             }
         });
+    }
+
+    private void retrieveFirebaseData(ArrayList<ToDoModel> toDoList){
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                GenericTypeIndicator<ArrayList<HashMap<String, String>>> t = new GenericTypeIndicator<ArrayList<HashMap<String, String>>>() {};
+                ArrayList<HashMap<String, String>> yourArray = snapshot.getValue(t);
+//                ArrayList<ToDoModel> toDoList = new ArrayList<>();
+                for (HashMap<String, String> map : yourArray) {
+                    String time = map.get("time");
+                    String title = map.get("title");
+                    ToDoModel toDo = new ToDoModel(time, title);
+                    toDoList.add(toDo);
+                }
+                // Do something with toDoList
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                Log.e("The read failed: ", firebaseError.getMessage());
+            }
+        };
+        mDatabase.child("users/ViwijDg30YPOf3UTCKCIsFc0XuK2/123456")
+                .limitToLast(1)
+                .addValueEventListener(postListener);
+    }
+
+    private void getFirebaseData(){
+        Task<DataSnapshot> task = database.getReference()
+                .child("users")
+                .child(user.getUid())
+                .child("123456")
+                .get();
+        task.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class);
+                Log.d("data", value);
+            }
+        });
+    }
+
+    public void fecthData(ArrayList<ToDoModel> todoList) {
+        database = FirebaseDatabase.getInstance();
+        database.getReference()
+                .child("users")
+                .child(user.getUid())
+                .child("123456")
+                .child("todos")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            String fecthData = String.valueOf(task.getResult().getValue());
+//                            Log.d("data", fecthData);
+                            Gson gson = new Gson();
+
+                            Type listType = new TypeToken<ArrayList<ToDoModel>>(){}.getType();
+                            ArrayList<ToDoModel> todos = gson.fromJson(fecthData, listType);
+
+                            for (ToDoModel todo : todos) {
+                                Log.d("item", todo.getTime());
+//                                todoList.add(new ToDoModel(todo.getTime(), todo.getTitle()));
+                                Log.d("dataModel", "amount before");
+                                Log.d("dataModel", Integer.toString(todoList.size()));
+                                binding.listViewTodo.setAdapter(adapter);
+                                dataModels.add(new ToDoModel(todo.getTime(), todo.getTitle()));
+
+                                // 3- Adapter
+                                adapter = new CustomAdapter(dataModels, getActivity().getApplicationContext());
+                                binding.listViewTodo.setAdapter(adapter);
+
+                                binding.listViewTodo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                        String time = adapter.getItem(i).getTime();
+                                        String title = adapter.getItem(i).getTitle();
+
+//                Log.d("item", dataModels.get(i).getTime());
+
+                                        updateBinding = UpdateTodoLayoutBinding.inflate(getLayoutInflater());
+
+                                        updateBinding.edtTimeUpdate.setText(time);
+                                        updateBinding.edtTitleUpdate.setText(title);
+
+                                        new AlertDialog.Builder(getContext())
+                                                .setTitle("Update Task")
+                                                .setView(updateBinding.getRoot())
+                                                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int ind) {
+                                                        dataModels.remove(i);
+                                                        adapter.notifyDataSetChanged();
+
+                                                        Gson gson = new Gson();
+                                                        String json = gson.toJson(dataModels);
+                                                        database = FirebaseDatabase.getInstance();
+                                                        database.getReference()
+                                                                .child("users")
+                                                                .child(user.getUid())
+                                                                .child("123456")
+                                                                .child("todos")
+//                                .push()
+                                                                .setValue(json);
+                                                    }
+                                                })
+                                                .setNegativeButton("Update", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int ind) {
+                                                        dataModels.set(i, new ToDoModel(updateBinding.edtTimeUpdate.getText().toString(),
+                                                                updateBinding.edtTitleUpdate.getText().toString()));
+                                                        adapter.notifyDataSetChanged();
+
+                                                        Gson gson = new Gson();
+                                                        String json = gson.toJson(dataModels);
+                                                        database = FirebaseDatabase.getInstance();
+                                                        database.getReference()
+                                                                .child("users")
+                                                                .child(user.getUid())
+                                                                .child("123456")
+                                                                .child("todos")
+//                                .push()
+                                                                .setValue(json);
+                                                    }
+                                                })
+                                                .create().show();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+
     }
 
 }
