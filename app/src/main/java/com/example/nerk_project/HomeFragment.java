@@ -21,6 +21,8 @@ import com.example.nerk_project.databinding.FragmentLoginBinding;
 import com.example.nerk_project.databinding.InputTodoLayoutBinding;
 import com.example.nerk_project.databinding.UpdateTodoLayoutBinding;
 import com.example.nerk_project.model.ToDoModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -91,6 +93,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void  goBack(){
+        FirebaseAuth.getInstance().signOut();
         openFragment(LoginFragment.newInstance());
     }
 

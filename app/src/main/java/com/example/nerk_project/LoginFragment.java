@@ -11,6 +11,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.nerk_project.databinding.FragmentLoginBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,6 +23,8 @@ import com.example.nerk_project.databinding.FragmentLoginBinding;
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment {
+
+    private FirebaseAuth mAuth;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -72,7 +79,8 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
         // return inflater.inflate(R.layout.fragment_login, container, false);
         binding = FragmentLoginBinding.inflate(getLayoutInflater(), container, false);
-        binding.btnLogin.setOnClickListener(view -> login());
+        mAuth = FirebaseAuth.getInstance();
+        binding.btnLogin.setOnClickListener(view -> loginUser());
         binding.btnRegister.setOnClickListener(view -> register());
 
         return binding.getRoot();
@@ -86,4 +94,27 @@ public class LoginFragment extends Fragment {
         mainActivity().openHome();
     }
     private void register(){mainActivity().openRegister();}
+
+    private void  loginUser(){
+        String email = binding.edtUsername.getText().toString();
+        String password = binding.edtPassword.getText().toString();
+
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(mainActivity().getApplicationContext()
+                                    , user.getEmail(), Toast.LENGTH_SHORT).show();
+
+                            mainActivity().openHome();
+
+                        } else {
+                            Toast.makeText(mainActivity().getApplicationContext()
+                                    , "Failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
 }
