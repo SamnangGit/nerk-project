@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "668523173137",
+    "firebase_url": "https://nerk-project-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "nerk-project",
+    "storage_bucket": "nerk-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668523173137:android:76c5fdb3d128393fd1a8b0",
+        "android_client_info": {
+          "package_name": "com.example.nerk_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "668523173137-juqnf4esapchlvajaje76badj9rgh1e6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSXZeCdbgWArfOVMVa9hcT_w1G-YH-HHo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "668523173137-juqnf4esapchlvajaje76badj9rgh1e6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

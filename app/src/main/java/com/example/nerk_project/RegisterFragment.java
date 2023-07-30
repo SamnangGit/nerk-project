@@ -2,22 +2,21 @@ package com.example.nerk_project;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.nerk_project.databinding.FragmentLoginBinding;
+import com.example.nerk_project.databinding.FragmentRegisterBinding;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
+ * Use the {@link RegisterFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LoginFragment extends Fragment {
+public class RegisterFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,32 +27,23 @@ public class LoginFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    FragmentLoginBinding binding;
+    FragmentRegisterBinding binding;
 
-    public LoginFragment() {
+    public RegisterFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LoginFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
+    public static RegisterFragment newInstance() {
+        RegisterFragment fragment = new RegisterFragment();
+        return fragment;
+    }
+
+    public static RegisterFragment newInstance(String param1, String param2) {
+        RegisterFragment fragment = new RegisterFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static LoginFragment newInstance() {
-        LoginFragment fragment = new LoginFragment();
         return fragment;
     }
 
@@ -69,21 +59,15 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        // return inflater.inflate(R.layout.fragment_login, container, false);
-        binding = FragmentLoginBinding.inflate(getLayoutInflater(), container, false);
-        binding.btnLogin.setOnClickListener(view -> login());
-        binding.btnRegister.setOnClickListener(view -> register());
+        binding = FragmentRegisterBinding.inflate(getLayoutInflater(), container, false);
+        binding.btnLogin.setOnClickListener(view -> back());
 
         return binding.getRoot();
-
     }
 
     MainActivity mainActivity (){
         return (MainActivity) getActivity();
     }
-    private void  login(){
-        mainActivity().openHome();
-    }
-    private void register(){mainActivity().openRegister();}
+
+    private void back(){ mainActivity().openLogin(); }
 }

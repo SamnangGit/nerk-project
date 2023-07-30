@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
         openLogin();
     }
 
+    public void openRegister(){openFragment(RegisterFragment.newInstance());}
     public void openLogin(){
         openFragment(LoginFragment.newInstance());
     }
