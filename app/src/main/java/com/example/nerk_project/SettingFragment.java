@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.nerk_project.databinding.FragmentLoginBinding;
 import com.example.nerk_project.databinding.FragmentSettingBinding;
@@ -96,10 +97,13 @@ public class SettingFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         database.getReference()
                 .child("users")
-                .child(user.getUid())
+                .child(partnerUid)
                 .child("123456")
                 .child("touch")
                 .child("color")
                 .setValue(colorCode);
+
+        Toast.makeText(mainActivity().getApplicationContext()
+                , "Done", Toast.LENGTH_SHORT).show();
     }
 }
