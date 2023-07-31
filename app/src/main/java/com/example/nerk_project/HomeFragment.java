@@ -107,6 +107,11 @@ public class HomeFragment extends Fragment {
         binding.btnBack.setOnClickListener(view -> goBack());
         binding.btnSet.setOnClickListener(view -> todoOperation());
 
+
+//        binding.tcCount.setText(Integer.toString(getCount()));
+
+        getCount();
+
         partnerDataModels = new ArrayList<>();
         binding.btnTitleHome.setOnClickListener(view -> fetchPartnerData(partnerDataModels));
 
@@ -424,6 +429,53 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
+    }
+
+
+    private void getCount(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String partnerUid = "";
+        String uid = user.getUid();
+
+        if(uid.equals("HdzXXsZCuMYsMs66zvzL13n2naw2")){
+            partnerUid = "KexuveflI8bCQzKeN3zqnE7YjTU2";
+        }else if(uid.equals("KexuveflI8bCQzKeN3zqnE7YjTU2")){
+            partnerUid = "HdzXXsZCuMYsMs66zvzL13n2naw2";
+        }
+
+        database = FirebaseDatabase.getInstance();
+        database.getReference()
+                .child("users")
+                .child(user.getUid())
+                .child("123456")
+                .child("touch")
+                .child("count")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }else{
+                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                            int count = Integer.parseInt(String.valueOf(task.getResult().getValue()));
+                            int pbCount = count % 10;
+
+                            binding.tcCount.setText(Integer.toString(count));
+                            binding.progressBar.setProgress(pbCount);
+                            if(count >= 10){
+                                binding.imageViewCircleTwo.setImageResource(R.drawable.circle_shape);
+                                if(count >= 30){
+                                    binding.imageViewRectangle.setImageResource(R.drawable.rectangle_shape);
+                                    if(count >= 40){
+                                        binding.imageViewCircleOne.setImageResource(R.drawable.circle_shape);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                });
     }
 
 }
