@@ -3,6 +3,7 @@ package com.example.nerk_project;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -59,6 +60,7 @@ public class HomeFragment extends Fragment {
     ListView listView;
     private static CustomAdapter adapter;
     ArrayList<ToDoModel> dataModels;
+    ArrayList<ToDoModel> partnerDataModels;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -104,6 +106,10 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(getLayoutInflater(), container, false);
         binding.btnBack.setOnClickListener(view -> goBack());
         binding.btnSet.setOnClickListener(view -> todoOperation());
+
+        partnerDataModels = new ArrayList<>();
+        binding.btnTitleHome.setOnClickListener(view -> fetchPartnerData(partnerDataModels));
+
 
         // 2- Data source
         dataModels = new ArrayList<>();
@@ -180,8 +186,6 @@ public class HomeFragment extends Fragment {
                 String time = adapter.getItem(i).getTime();
                 String title = adapter.getItem(i).getTitle();
 
-//                Log.d("item", dataModels.get(i).getTime());
-
                 updateBinding = UpdateTodoLayoutBinding.inflate(getLayoutInflater());
 
                 updateBinding.edtTimeUpdate.setText(time);
@@ -253,6 +257,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void fecthData(ArrayList<ToDoModel> todoList) {
+        todoList.clear();
         database = FirebaseDatabase.getInstance();
         database.getReference()
                 .child("users")
@@ -274,75 +279,147 @@ public class HomeFragment extends Fragment {
                             Type listType = new TypeToken<ArrayList<ToDoModel>>(){}.getType();
                             ArrayList<ToDoModel> todos = gson.fromJson(fecthData, listType);
 
-                            for (ToDoModel todo : todos) {
-                                Log.d("item", todo.getTime());
+                            if(todos != null){
+                                for (ToDoModel todo : todos) {
+                                    Log.d("item", todo.getTime());
 //                                todoList.add(new ToDoModel(todo.getTime(), todo.getTitle()));
-                                Log.d("dataModel", "amount before");
-                                Log.d("dataModel", Integer.toString(todoList.size()));
-                                binding.listViewTodo.setAdapter(adapter);
-                                dataModels.add(new ToDoModel(todo.getTime(), todo.getTitle()));
+                                    Log.d("dataModel", "amount before");
+                                    Log.d("dataModel", Integer.toString(todoList.size()));
+                                    binding.listViewTodo.setAdapter(adapter);
+                                    dataModels.add(new ToDoModel(todo.getTime(), todo.getTitle()));
 
-                                // 3- Adapter
-                                adapter = new CustomAdapter(dataModels, getActivity().getApplicationContext());
-                                binding.listViewTodo.setAdapter(adapter);
+                                    // 3- Adapter
+                                    adapter = new CustomAdapter(dataModels, getActivity().getApplicationContext());
+                                    binding.listViewTodo.setAdapter(adapter);
 
+                                    binding.listViewTodo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                            String time = adapter.getItem(i).getTime();
+                                            String title = adapter.getItem(i).getTitle();
+
+                                            updateBinding = UpdateTodoLayoutBinding.inflate(getLayoutInflater());
+
+                                            updateBinding.edtTimeUpdate.setText(time);
+                                            updateBinding.edtTitleUpdate.setText(title);
+
+                                            new AlertDialog.Builder(getContext())
+                                                    .setTitle("Update Task")
+                                                    .setView(updateBinding.getRoot())
+                                                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int ind) {
+                                                            dataModels.remove(i);
+                                                            adapter.notifyDataSetChanged();
+
+                                                            Gson gson = new Gson();
+                                                            String json = gson.toJson(dataModels);
+                                                            database = FirebaseDatabase.getInstance();
+                                                            database.getReference()
+                                                                    .child("users")
+                                                                    .child(user.getUid())
+                                                                    .child("123456")
+                                                                    .child("todos")
+                                                                    .setValue(json);
+                                                        }
+                                                    })
+                                                    .setNegativeButton("Update", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int ind) {
+                                                            dataModels.set(i, new ToDoModel(updateBinding.edtTimeUpdate.getText().toString(),
+                                                                    updateBinding.edtTitleUpdate.getText().toString()));
+                                                            adapter.notifyDataSetChanged();
+
+                                                            Gson gson = new Gson();
+                                                            String json = gson.toJson(dataModels);
+                                                            database = FirebaseDatabase.getInstance();
+                                                            database.getReference()
+                                                                    .child("users")
+                                                                    .child(user.getUid())
+                                                                    .child("123456")
+                                                                    .child("todos")
+                                                                    .setValue(json);
+                                                        }
+                                                    })
+                                                    .create().show();
+                                        }
+                                    });
+                                }
+
+                            }
+
+                        }
+                    }
+                });
+
+    }
+
+    public void fetchPartnerData(ArrayList<ToDoModel> todoList){
+        todoList.clear();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String partnerUid = "";
+        String uid = user.getUid();
+        if(uid.equals("HdzXXsZCuMYsMs66zvzL13n2naw2")){
+            partnerUid = "KexuveflI8bCQzKeN3zqnE7YjTU2";
+        }else if(uid.equals("KexuveflI8bCQzKeN3zqnE7YjTU2")){
+            partnerUid = "HdzXXsZCuMYsMs66zvzL13n2naw2";
+        }
+
+        database = FirebaseDatabase.getInstance();
+        database.getReference()
+                .child("users")
+                .child(partnerUid)
+                .child("123456")
+                .child("todos")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            String fecthData = String.valueOf(task.getResult().getValue());
+                            Gson gson = new Gson();
+                            Log.d("click", fecthData);
+
+
+                            Type listType = new TypeToken<ArrayList<ToDoModel>>(){}.getType();
+                            ArrayList<ToDoModel> todos = gson.fromJson(fecthData, listType);
+
+                            Log.d("btnTitle", binding.btnTitleHome.getText().toString());
+
+                            if(todos != null && binding.btnTitleHome.getText().toString().equals("NERK")){
+                                binding.btnTitleHome.setText("VIMEAN");
+                                binding.btnSet.setClickable(false);
                                 binding.listViewTodo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                        String time = adapter.getItem(i).getTime();
-                                        String title = adapter.getItem(i).getTitle();
 
-//                Log.d("item", dataModels.get(i).getTime());
-
-                                        updateBinding = UpdateTodoLayoutBinding.inflate(getLayoutInflater());
-
-                                        updateBinding.edtTimeUpdate.setText(time);
-                                        updateBinding.edtTitleUpdate.setText(title);
-
-                                        new AlertDialog.Builder(getContext())
-                                                .setTitle("Update Task")
-                                                .setView(updateBinding.getRoot())
-                                                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int ind) {
-                                                        dataModels.remove(i);
-                                                        adapter.notifyDataSetChanged();
-
-                                                        Gson gson = new Gson();
-                                                        String json = gson.toJson(dataModels);
-                                                        database = FirebaseDatabase.getInstance();
-                                                        database.getReference()
-                                                                .child("users")
-                                                                .child(user.getUid())
-                                                                .child("123456")
-                                                                .child("todos")
-//                                .push()
-                                                                .setValue(json);
-                                                    }
-                                                })
-                                                .setNegativeButton("Update", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int ind) {
-                                                        dataModels.set(i, new ToDoModel(updateBinding.edtTimeUpdate.getText().toString(),
-                                                                updateBinding.edtTitleUpdate.getText().toString()));
-                                                        adapter.notifyDataSetChanged();
-
-                                                        Gson gson = new Gson();
-                                                        String json = gson.toJson(dataModels);
-                                                        database = FirebaseDatabase.getInstance();
-                                                        database.getReference()
-                                                                .child("users")
-                                                                .child(user.getUid())
-                                                                .child("123456")
-                                                                .child("todos")
-//                                .push()
-                                                                .setValue(json);
-                                                    }
-                                                })
-                                                .create().show();
                                     }
                                 });
+
+                                for (ToDoModel todo : todos) {
+                                    Log.d("item", todo.getTime());
+                                    Log.d("dataModel", "amount before");
+                                    Log.d("dataModel", Integer.toString(todoList.size()));
+                                    binding.listViewTodo.setAdapter(adapter);
+                                    partnerDataModels.add(new ToDoModel(todo.getTime(), todo.getTitle()));
+
+                                    // 3- Adapter
+                                    adapter = new CustomAdapter(partnerDataModels, getActivity().getApplicationContext());
+                                    binding.listViewTodo.setAdapter(adapter);
+
+                                }
+
                             }
+                            else{
+                                binding.btnSet.setClickable(true);
+                                fecthData(dataModels);
+                                binding.btnTitleHome.setText("NERK");
+                            }
+
                         }
                     }
                 });

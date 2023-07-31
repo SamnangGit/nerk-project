@@ -8,13 +8,15 @@
     android:background="#050000"
     tools:context=".HomeFragment">
 
-    <TextView
-        android:id="@+id/tvTitleHome"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnTitleHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:fontFamily="@font/eightbit"
         android:text="NERK"
+        android:background="#000000"
+        android:backgroundTint="#000000"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +33,7 @@
         android:layout_marginTop="50dp"
         android:src="@drawable/avatar_girl"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitleHome" />
+        app:layout_constraintTop_toBottomOf="@+id/btnTitleHome" />
 
     <TextView
         android:id="@+id/tcCount"
@@ -48,7 +50,7 @@
         android:textSize="48sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgProfileHome"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitleHome" />
+        app:layout_constraintTop_toBottomOf="@+id/btnTitleHome" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -106,9 +108,9 @@
         android:text="back"
         android:textColor="#FFFFFF"
         android:textSize="8sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvTitleHome"
+        app:layout_constraintBottom_toBottomOf="@+id/btnTitleHome"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvTitleHome" />
+        app:layout_constraintTop_toTopOf="@+id/btnTitleHome" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSetting"
@@ -120,9 +122,9 @@
         android:text="setting"
         android:textColor="#FFFFFF"
         android:textSize="8sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvTitleHome"
+        app:layout_constraintBottom_toBottomOf="@+id/btnTitleHome"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvTitleHome" />
+        app:layout_constraintTop_toTopOf="@+id/btnTitleHome" />
 
     <LinearLayout
         android:layout_width="0dp"
