@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     public void openHome (){
         openFragment(HomeFragment.newInstance());
     }
+    public  void openSetting(){openFragment(SettingFragment.newInstance());}
 
     private void openFragment(Fragment fragment){
         getSupportFragmentManager()

@@ -106,6 +106,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(getLayoutInflater(), container, false);
         binding.btnBack.setOnClickListener(view -> goBack());
         binding.btnSet.setOnClickListener(view -> todoOperation());
+        binding.btnSetting.setOnClickListener(view -> openSetting());
 
 
 //        binding.tcCount.setText(Integer.toString(getCount()));
@@ -130,9 +131,13 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void  goBack(){
+    private void goBack(){
         FirebaseAuth.getInstance().signOut();
         openFragment(LoginFragment.newInstance());
+    }
+
+    private void openSetting(){
+        openFragment(SettingFragment.newInstance());
     }
 
     private void openFragment(Fragment fragment){
