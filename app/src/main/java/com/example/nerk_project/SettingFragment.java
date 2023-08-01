@@ -69,6 +69,7 @@ public class SettingFragment extends Fragment {
         binding.btnReturnHome.setOnClickListener(view -> returnBack());
         binding.btnSetColor.setOnClickListener(view -> setColorCode());
         binding.imgWifi.setOnClickListener(view -> setWifi());
+        binding.imgReset.setOnClickListener(view -> resetAllData());
 
         return binding.getRoot();
 
@@ -116,5 +117,51 @@ public class SettingFragment extends Fragment {
         String url = "http://192.168.4.1";
         Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(urlIntent);
+    }
+
+    private void resetAllData(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+        String partnerUid = "";
+        if(uid.equals("HdzXXsZCuMYsMs66zvzL13n2naw2")){
+            partnerUid = "KexuveflI8bCQzKeN3zqnE7YjTU2";
+        }else if(uid.equals("KexuveflI8bCQzKeN3zqnE7YjTU2")){
+            partnerUid = "HdzXXsZCuMYsMs66zvzL13n2naw2";
+        }
+
+        database = FirebaseDatabase.getInstance();
+        database.getReference()
+                .child("users")
+                .child(user.getUid())
+                .child("123456")
+                .child("todos")
+                .setValue("");
+
+        database.getReference()
+                .child("users")
+                .child(user.getUid())
+                .child("123456")
+                .child("touch")
+                .child("count")
+                .setValue(0);
+
+        database = FirebaseDatabase.getInstance();
+        database.getReference()
+                .child("users")
+                .child(partnerUid)
+                .child("123456")
+                .child("todos")
+                .setValue("");
+
+        database.getReference()
+                .child("users")
+                .child(partnerUid)
+                .child("123456")
+                .child("touch")
+                .child("count")
+                .setValue(0);
+
+        Toast.makeText(mainActivity().getApplicationContext()
+                , "Done", Toast.LENGTH_SHORT).show();
     }
 }
