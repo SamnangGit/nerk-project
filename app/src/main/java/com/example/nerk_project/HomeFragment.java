@@ -401,7 +401,7 @@ public class HomeFragment extends Fragment {
                             Log.d("btnTitle", binding.btnTitleHome.getText().toString());
 
                             if(todos != null && binding.btnTitleHome.getText().toString().equals("NERK")){
-                                binding.btnTitleHome.setText("VIMEAN");
+                                binding.btnTitleHome.setText("PARTNER");
                                 binding.btnSet.setClickable(false);
                                 binding.listViewTodo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override

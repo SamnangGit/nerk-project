@@ -1,6 +1,10 @@
 package com.example.nerk_project;
 
+import android.net.Uri;
 import android.os.Bundle;
+
+import android.content.Intent;
+
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -64,6 +68,7 @@ public class SettingFragment extends Fragment {
         binding = FragmentSettingBinding.inflate(getLayoutInflater(), container, false);
         binding.btnReturnHome.setOnClickListener(view -> returnBack());
         binding.btnSetColor.setOnClickListener(view -> setColorCode());
+        binding.imgWifi.setOnClickListener(view -> setWifi());
 
         return binding.getRoot();
 
@@ -105,5 +110,11 @@ public class SettingFragment extends Fragment {
 
         Toast.makeText(mainActivity().getApplicationContext()
                 , "Done", Toast.LENGTH_SHORT).show();
+    }
+
+    private void setWifi(){
+        String url = "http://192.168.4.1";
+        Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(urlIntent);
     }
 }
