@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,7 +109,8 @@ public class LoginFragment extends Fragment {
 //                            Toast.makeText(mainActivity().getApplicationContext()
 //                                    , user.getEmail(), Toast.LENGTH_SHORT).show();
 
-                            mainActivity().openHome();
+//                            mainActivity().openHome();
+                            mainActivity().openPairCode();
 
                         } else {
                             Toast.makeText(mainActivity().getApplicationContext()

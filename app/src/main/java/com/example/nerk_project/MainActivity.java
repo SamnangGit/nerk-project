@@ -27,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
     public void openLogin(){
         openFragment(LoginFragment.newInstance());
     }
+    public void openPairCode(){
+        openFragment(PairCodeFragment.newInstance());
+    }
     public void openHome (){
         openFragment(HomeFragment.newInstance());
     }
