@@ -1,11 +1,14 @@
 package com.example.nerk_project;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +22,14 @@ import android.graphics.Color;
 import android.widget.ImageView;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatReader;
 import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.common.BitMatrix;
+
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
+
 
 
 /**
@@ -41,6 +49,9 @@ public class PairCodeFragment extends Fragment {
     private String mParam2;
 
     FragmentPairCodeBinding binding;
+
+    private MultiFormatReader multiFormatReader = new MultiFormatReader();
+
 
 
     public PairCodeFragment() {
@@ -76,7 +87,7 @@ public class PairCodeFragment extends Fragment {
         // Inflate the layout for this fragment
         // return inflater.inflate(R.layout.fragment_login, container, false);
         binding = FragmentPairCodeBinding.inflate(getLayoutInflater(), container, false);
-        binding.btnPair.setOnClickListener(view -> getThis(view));
+        binding.btnPair.setOnClickListener(view -> scanCode());
         ImageView imageView = binding.ivQrCode;
         Bitmap qrCodeBitmap = generateQRCode(getUID());
         imageView.setImageBitmap(qrCodeBitmap);
@@ -115,11 +126,35 @@ public class PairCodeFragment extends Fragment {
         FirebaseDatabase.getInstance().getReference().child("users").child(uid).child("partnerUID").setValue(partnerUID);
     }
 
-    public void getThis(View v) {
-        Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-        intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-        startActivityForResult(intent, 0);
 
+    private void scanCode()
+    {
+        ScanOptions options = new ScanOptions();
+        options.setPrompt("Volume up to flash on");
+        options.setBeepEnabled(true);
+        options.setOrientationLocked(true);
+        options.setCaptureActivity(CaptureAct.class);
+        barLaucher.launch(options);
     }
+
+
+    ActivityResultLauncher<ScanOptions> barLaucher = registerForActivityResult(new ScanContract(), result->
+    {
+        if(result.getContents() !=null)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Result");
+            builder.setMessage(result.getContents());
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i)
+                {
+                    dialogInterface.dismiss();
+                }
+            }).show();
+        }
+    });
+
 
 }
