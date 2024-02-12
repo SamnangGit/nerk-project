@@ -71,10 +71,37 @@ public class SettingFragment extends Fragment {
         binding.imgWifi.setOnClickListener(view -> setWifi());
         binding.imgReset.setOnClickListener(view -> resetAllData());
 
+        binding.red.setOnClickListener(view -> {
+            binding.edtColor.setText("0xFF0000");
+        });
+
+        binding.green.setOnClickListener(view -> {
+            binding.edtColor.setText("0x00FF00");
+        });
+
+        binding.blue.setOnClickListener(view -> {
+            binding.edtColor.setText("0x0000FF");
+        });
+
+        binding.yellow.setOnClickListener(view -> {
+            binding.edtColor.setText("0xFFFF00");
+        });
+
+        binding.violet.setOnClickListener(view -> {
+            binding.edtColor.setText("0x7F00FF");
+        });
+
+        binding.pink.setOnClickListener(view -> {
+            binding.edtColor.setText("0xFFC0CB");
+        });
+
+
+
         return binding.getRoot();
 
 
     }
+
 
     public static SettingFragment newInstance() {
         SettingFragment fragment = new SettingFragment();
