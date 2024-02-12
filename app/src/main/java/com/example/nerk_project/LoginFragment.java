@@ -110,7 +110,8 @@ public class LoginFragment extends Fragment {
 //                                    , user.getEmail(), Toast.LENGTH_SHORT).show();
 
 //                            mainActivity().openHome();
-                            mainActivity().openPairCode();
+//                            mainActivity().openPairCode();
+                            mainActivity().openOption();
 
                         } else {
                             Toast.makeText(mainActivity().getApplicationContext()

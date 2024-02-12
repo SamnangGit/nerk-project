@@ -38,11 +38,15 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -104,7 +108,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(getLayoutInflater(), container, false);
-        binding.btnBack.setOnClickListener(view -> goBack());
+        binding.btnOption.setOnClickListener(view -> goOption());
         binding.btnSet.setOnClickListener(view -> todoOperation());
         binding.btnSetting.setOnClickListener(view -> openSetting());
 
@@ -131,9 +135,10 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void goBack(){
-        FirebaseAuth.getInstance().signOut();
-        openFragment(LoginFragment.newInstance());
+    private void goOption(){
+//        FirebaseAuth.getInstance().signOut();
+//        openFragment(LoginFragment.newInstance());
+        openFragment(OptionFragment.newInstance());
     }
 
     private void openSetting(){
@@ -364,22 +369,74 @@ public class HomeFragment extends Fragment {
 
     }
 
+    public String retrievePartnerUID(){
+        try {
+            File file = new File(getContext().getFilesDir(), "partnerUID.json");
+            FileReader fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            StringBuilder stringBuilder = new StringBuilder();
+            String line = bufferedReader.readLine();
+            while (line != null){
+                stringBuilder.append(line).append("\n");
+                line = bufferedReader.readLine();
+            }
+            bufferedReader.close();
+            String response = stringBuilder.toString();
+
+            // Remove invalid characters
+            response = response.replace(".", "")
+                    .replace("$", "")
+                    .replace("[", "")
+                    .replace("]", "")
+                    .replace("#", "")
+                    .replace("/", "");
+
+            int count = 0;
+
+            for (int i = 0; i < response.length(); i++) {
+
+                // Checking the character for not being a
+                // letter,digit or space
+                if (!Character.isDigit(response.charAt(i))
+                        && !Character.isLetter(response.charAt(i))
+                        && !Character.isWhitespace(response.charAt(i))) {
+                    // Incrementing the countr for spl
+                    // characters by unity
+                    count++;
+                }
+            }
+
+            // When there is no special character encountered
+            if (count == 0)
+                Log.d("specialChar", "No Special Characters found.");
+            else
+                Log.d("specialChar", "Special Characters found.");
+
+            return response;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     public void fetchPartnerData(ArrayList<ToDoModel> todoList){
         todoList.clear();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String partnerUid = "";
         String uid = user.getUid();
-        if(uid.equals("HdzXXsZCuMYsMs66zvzL13n2naw2")){
-            partnerUid = "KexuveflI8bCQzKeN3zqnE7YjTU2";
-        }else if(uid.equals("KexuveflI8bCQzKeN3zqnE7YjTU2")){
-            partnerUid = "HdzXXsZCuMYsMs66zvzL13n2naw2";
-        }
+        Log.d("uid", uid);
+
+        String partnerUID = retrievePartnerUID();
+//        String partnerUID = "";
+        Log.d("partnerUID", partnerUID);
+//        Log.d("partnerUIDType", partnerUID.getClass().getName());
+
 
         database = FirebaseDatabase.getInstance();
         database.getReference()
                 .child("users")
-                .child(partnerUid)
+                .child(partnerUID)
                 .child("123456")
                 .child("todos")
                 .get()

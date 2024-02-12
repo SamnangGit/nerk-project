@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatReader;
@@ -30,6 +31,11 @@ import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import org.json.JSONObject;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 
 
 /**
@@ -126,6 +132,19 @@ public class PairCodeFragment extends Fragment {
         FirebaseDatabase.getInstance().getReference().child("users").child(uid).child("partnerUID").setValue(partnerUID);
     }
 
+    public void setPartnerUIDInLocalStore(String partnerUID){
+        try {
+            // Define the File Path and its Name
+            File file = new File(getContext().getFilesDir(), "partnerUID.txt");
+            FileWriter fileWriter = new FileWriter(file);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write(partnerUID);
+            bufferedWriter.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     private void scanCode()
     {
@@ -142,18 +161,19 @@ public class PairCodeFragment extends Fragment {
     {
         if(result.getContents() !=null)
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Result");
-            builder.setMessage(result.getContents());
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i)
-                {
-                    dialogInterface.dismiss();
-                }
-            }).show();
+
+            String partnerUID = result.getContents();
+//            setPartnerUID(partnerUID);
+            setPartnerUIDInLocalStore(partnerUID);
+            Toast.makeText(getContext(), "Pairing successful", Toast.LENGTH_SHORT).show();
+//            redirect to home
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.openOption();
+            ;
+
+
         }
+
     });
 
 

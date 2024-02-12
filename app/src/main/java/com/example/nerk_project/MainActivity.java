@@ -30,8 +30,26 @@ public class MainActivity extends AppCompatActivity {
     public void openPairCode(){
         openFragment(PairCodeFragment.newInstance());
     }
+
+    public void openLocation(){
+        openFragment(LocationFragment.newInstance());
+    }
+
+    public void openChat(){
+        openFragment(ChatFragment.newInstance());
+    }
+
+
     public void openHome (){
         openFragment(HomeFragment.newInstance());
+    }
+
+    public void openOption(){
+        openFragment(OptionFragment.newInstance());
+    }
+
+    public void openMemory(){
+        openFragment(MemoryFragment.newInstance());
     }
     public  void openSetting(){openFragment(SettingFragment.newInstance());}
 
