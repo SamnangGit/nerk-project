@@ -111,6 +111,7 @@ public class HomeFragment extends Fragment {
         binding.btnOption.setOnClickListener(view -> goOption());
         binding.btnSet.setOnClickListener(view -> todoOperation());
         binding.btnSetting.setOnClickListener(view -> openSetting());
+        binding.imgProfileHome.setOnClickListener(view -> changeProfile());
 
 
 //        binding.tcCount.setText(Integer.toString(getCount()));
@@ -139,6 +140,18 @@ public class HomeFragment extends Fragment {
 //        FirebaseAuth.getInstance().signOut();
 //        openFragment(LoginFragment.newInstance());
         openFragment(OptionFragment.newInstance());
+    }
+
+    private boolean isBoy = true; // Add this as a field in your class
+
+    private void changeProfile() {
+        if (isBoy) {
+            binding.imgProfileHome.setImageResource(R.drawable.avatar_girl);
+            isBoy = false;
+        } else {
+            binding.imgProfileHome.setImageResource(R.drawable.boy_eight_bit);
+            isBoy = true;
+        }
     }
 
     private void openSetting(){

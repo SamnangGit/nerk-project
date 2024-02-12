@@ -4,9 +4,12 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.nerk_project.databinding.FragmentChatBinding;
@@ -105,6 +108,25 @@ public class ChatFragment extends Fragment {
                 messageText.setText(model.getMessageText());
                 messageUser.setText(model.getMessageUser());
 
+                // Check if the message is from the current user
+                if (model.getMessageUser() != null && model.getMessageUser().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                    // If yes, align the text to the right
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.gravity = Gravity.END;
+                    messageText.setLayoutParams(params);
+                    messageUser.setLayoutParams(params);
+                    messageTime.setLayoutParams(params);
+                } else {
+                    // If no, align the text to the left (or default)
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.gravity = Gravity.START;
+                    messageText.setLayoutParams(params);
+                    messageUser.setLayoutParams(params);
+                    messageTime.setLayoutParams(params);
+                }
+
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
                 messageTime.setText(sdf.format(new Date(model.getMessageTime())));
             }
@@ -112,8 +134,8 @@ public class ChatFragment extends Fragment {
 
         binding.listOfMessages.setAdapter(adapter);
         binding.listOfMessages.setSelection(adapter.getCount() - 1); // Scroll to bottom
-
     }
+
 
     private void displayMessageHistory() {
         databaseReference = FirebaseDatabase.getInstance().getReference("messages");
@@ -133,6 +155,25 @@ public class ChatFragment extends Fragment {
 
                 messageText.setText(model.getMessageText());
                 messageUser.setText(model.getMessageUser());
+
+                // Check if the message is from the current user
+                if (model.getMessageUser() != null && model.getMessageUser().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                    // If yes, align the text to the right
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.gravity = Gravity.END;
+                    messageText.setLayoutParams(params);
+                    messageUser.setLayoutParams(params);
+                    messageTime.setLayoutParams(params);
+                } else {
+                    // If no, align the text to the left (or default)
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.gravity = Gravity.START;
+                    messageText.setLayoutParams(params);
+                    messageUser.setLayoutParams(params);
+                    messageTime.setLayoutParams(params);
+                }
 
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
                 messageTime.setText(sdf.format(new Date(model.getMessageTime())));
