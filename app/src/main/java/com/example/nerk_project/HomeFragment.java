@@ -440,16 +440,24 @@ public class HomeFragment extends Fragment {
         String uid = user.getUid();
         Log.d("uid", uid);
 
-        String partnerUID = retrievePartnerUID();
+//        String partnerUID = retrievePartnerUID();
+        String partnerUid = "";
 //        String partnerUID = "";
-        Log.d("partnerUID", partnerUID);
+//        Log.d("partnerUID", partnerUID);
 //        Log.d("partnerUIDType", partnerUID.getClass().getName());
+
+
+        if(uid.equals("HdzXXsZCuMYsMs66zvzL13n2naw2")){
+            partnerUid = "KexuveflI8bCQzKeN3zqnE7YjTU2";
+        }else if(uid.equals("KexuveflI8bCQzKeN3zqnE7YjTU2")){
+            partnerUid = "HdzXXsZCuMYsMs66zvzL13n2naw2";
+        }
 
 
         database = FirebaseDatabase.getInstance();
         database.getReference()
                 .child("users")
-                .child(partnerUID)
+                .child(partnerUid)
                 .child("123456")
                 .child("todos")
                 .get()
@@ -512,16 +520,16 @@ public class HomeFragment extends Fragment {
         String partnerUid = "";
         String uid = user.getUid();
 
-        if(uid.equals("HdzXXsZCuMYsMs66zvzL13n2naw2")){
-            partnerUid = "KexuveflI8bCQzKeN3zqnE7YjTU2";
-        }else if(uid.equals("KexuveflI8bCQzKeN3zqnE7YjTU2")){
-            partnerUid = "HdzXXsZCuMYsMs66zvzL13n2naw2";
-        }
+//        if(uid.equals("HdzXXsZCuMYsMs66zvzL13n2naw2")){
+//            partnerUid = "KexuveflI8bCQzKeN3zqnE7YjTU2";
+//        }else if(uid.equals("KexuveflI8bCQzKeN3zqnE7YjTU2")){
+//            partnerUid = "HdzXXsZCuMYsMs66zvzL13n2naw2";
+//        }
 
         database = FirebaseDatabase.getInstance();
         database.getReference()
                 .child("users")
-                .child(user.getUid())
+                .child(uid)
                 .child("123456")
                 .child("touch")
                 .child("count")

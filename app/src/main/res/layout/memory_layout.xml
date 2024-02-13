@@ -48,7 +48,7 @@
         android:id="@+id/memory_image"
         android:layout_height="400dp"
         android:layout_width="wrap_content"
-        android:src="@drawable/avatar_girl" />
+         />
 
     <TextView
         android:id="@+id/memory_time"

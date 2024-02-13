@@ -27,7 +27,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/avatar_girl"
-        app:layout_constraintBottom_toTopOf="@+id/list_of_messages"
+        app:layout_constraintBottom_toTopOf="@+id/feedsList"
         app:layout_constraintStart_toEndOf="@+id/tvRelationship" />
 
     <TextView
@@ -43,7 +43,7 @@
         android:text="33"
         android:textColor="#000000"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/list_of_messages"
+        app:layout_constraintBottom_toTopOf="@+id/feedsList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
@@ -55,11 +55,11 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/boy_eight_bit"
-        app:layout_constraintBottom_toTopOf="@+id/list_of_messages"
+        app:layout_constraintBottom_toTopOf="@+id/feedsList"
         app:layout_constraintEnd_toStartOf="@+id/tvRelationship" />
 
     <ListView
-        android:id="@+id/list_of_messages"
+        android:id="@+id/feedsList"
         android:layout_width="411dp"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
@@ -67,13 +67,13 @@
         android:background="#000000"
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll"
-        app:layout_constraintBottom_toTopOf="@+id/send_button"
+        app:layout_constraintBottom_toTopOf="@+id/btnGo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnBack" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/send_button"
+        android:id="@+id/btnGo"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center"

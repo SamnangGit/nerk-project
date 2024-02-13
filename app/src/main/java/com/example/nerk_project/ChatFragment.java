@@ -154,7 +154,16 @@ public class ChatFragment extends Fragment {
                 TextView messageTime = v.findViewById(R.id.message_time);
 
                 messageText.setText(model.getMessageText());
-                messageUser.setText(model.getMessageUser());
+                Log.d("ChatFragment", "populateView: " + model.getMessageUser());
+
+                if (model.getMessageUser() != null) {
+                    if (model.getMessageUser().equals("phengsamnangsp@gmail.com") ) {
+                        messageUser.setText("Kv");
+                    } else if (model.getMessageUser().equals("phengsamnangps@gmail.com")) {
+                        messageUser.setText("Ps");
+                    }
+                }
+
 
                 // Check if the message is from the current user
                 if (model.getMessageUser() != null && model.getMessageUser().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {

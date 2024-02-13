@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.nerk_project.databinding.FragmentChatBinding;
 import com.example.nerk_project.databinding.FragmentPostFeedBinding;
@@ -91,6 +92,7 @@ public class PostFeedFragment extends Fragment {
         binding = FragmentPostFeedBinding.inflate(inflater, container, false);
         binding.btnImg.setOnClickListener(view -> openFileChooser());
         binding.btnPost.setOnClickListener(view -> saveImage());
+        binding.btnBack.setOnClickListener(view -> goBack());
 
         return binding.getRoot();    }
 
@@ -101,6 +103,10 @@ public class PostFeedFragment extends Fragment {
         return fragment;
     }
 
+    public void goBack(){
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.openMemory();
+    }
 
     private void openFileChooser() {
         Intent intent = new Intent();
@@ -146,7 +152,7 @@ public class PostFeedFragment extends Fragment {
                             String userInput = binding.edtInput.getText().toString();
 
                             // Get the current time
-                            String timestamp = new Timestamp(new Date()).toString();
+                            Timestamp timestamp = new Timestamp(new Date());
 
                             // Get the user ID
                             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -184,7 +190,8 @@ public class PostFeedFragment extends Fragment {
             // No file was selected
         }
 
-        binding.edtInput.setText("");
+//        binding.edtInput.setText("");
+        Toast.makeText(getActivity(), "Post uploaded", Toast.LENGTH_SHORT).show();
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.openMemory();
     }
