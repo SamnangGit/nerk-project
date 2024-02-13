@@ -214,6 +214,5 @@ public class PostFeedFragment extends Fragment {
             binding.memoryProfile.setImageResource(R.drawable.boy_eight_bit);
             binding.memoryUser.setText("Ps");
         }
-
     }
 }

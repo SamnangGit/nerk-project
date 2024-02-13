@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -67,6 +69,11 @@ public class MemoryFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private FragmentActivity context;
+
+
+//    FirebaseAuth user = FirebaseAuth.getInstance();
+//    String userID = user.getUid();
 
     FragmentMemoryBinding binding;
 
@@ -90,6 +97,7 @@ public class MemoryFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        context = getActivity();
     }
 
     @Override
@@ -161,8 +169,9 @@ public class MemoryFragment extends Fragment {
                 }
 
                 ArrayAdapter<FeedModel> adapter = createAdapter(feedModels);
-                ListView listView = getView().findViewById(R.id.feedsList);
+                ListView listView = context.findViewById(R.id.feedsList);
                 listView.setAdapter(adapter);
+                listView.setSelection(0);
             }
         });
     }
@@ -170,7 +179,7 @@ public class MemoryFragment extends Fragment {
     private ArrayAdapter<FeedModel> createAdapter(List<FeedModel> models) {
 
 
-        return new ArrayAdapter<FeedModel>(getActivity(), R.layout.message_layout, models) {
+        return new ArrayAdapter<FeedModel>(context, R.layout.message_layout, models) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
@@ -185,6 +194,8 @@ public class MemoryFragment extends Fragment {
                 TextView memoryTime = convertView.findViewById(R.id.memory_time);
 
 
+
+
                 if (memoryUser != null) {
                     if (model.getUserId().equals("KexuveflI8bCQzKeN3zqnE7YjTU2")) {
                         memoryUser.setText("Kv");
@@ -194,6 +205,14 @@ public class MemoryFragment extends Fragment {
                         memoryProfile.setImageResource(R.drawable.boy_eight_bit);
                     }
                 }
+//
+//                if(userID.equals(model.getUserId())){
+//                    memoryUser.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+//
+//                } else {
+//                    memoryUser.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+//                }
+
                 if (memoryCaption != null) {
                     memoryCaption.setText(model.getUserInput());
                 }
@@ -219,6 +238,7 @@ public class MemoryFragment extends Fragment {
                         }
                     });
                 }
+
 
                 return convertView;
             }
@@ -272,8 +292,6 @@ public class MemoryFragment extends Fragment {
             }
         });
     }
-
-
 
 
 

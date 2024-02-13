@@ -75,7 +75,7 @@ public class ChatFragment extends Fragment {
         binding = FragmentChatBinding.inflate(inflater, container, false);
         binding.sendButton.setOnClickListener(view -> sendMessage());
         binding.btnBack.setOnClickListener(view -> goOption());
-
+        checkUser();
         displayMessageHistory();
         return binding.getRoot();
 
@@ -158,9 +158,11 @@ public class ChatFragment extends Fragment {
 
                 if (model.getMessageUser() != null) {
                     if (model.getMessageUser().equals("phengsamnangsp@gmail.com") ) {
-                        messageUser.setText("Kv");
+//                        messageUser.setText("Kv");
+                        messageUser.setVisibility(View.GONE);
+
                     } else if (model.getMessageUser().equals("phengsamnangps@gmail.com")) {
-                        messageUser.setText("Ps");
+                        messageUser.setVisibility(View.GONE);
                     }
                 }
 
@@ -198,5 +200,15 @@ public class ChatFragment extends Fragment {
     public static ChatFragment newInstance() {
         ChatFragment fragment = new ChatFragment();
         return fragment;
+    }
+
+    private void checkUser(){
+        FirebaseAuth user = FirebaseAuth.getInstance();
+        String userID = user.getUid();
+        if(userID.equals("KexuveflI8bCQzKeN3zqnE7YjTU2")){
+            binding.imgProfileHome.setImageResource(R.drawable.avatar_girl);
+        }else if(userID.equals("HdzXXsZCuMYsMs66zvzL13n2naw2")){
+            binding.imgProfileHome.setImageResource(R.drawable.boy_eight_bit);
+        }
     }
 }
