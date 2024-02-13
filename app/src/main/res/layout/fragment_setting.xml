@@ -93,6 +93,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/blue" />
 
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/violet"
         android:layout_width="80dp"

@@ -44,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
         openFragment(HomeFragment.newInstance());
     }
 
+    public void openPostFeed(){
+        openFragment(PostFeedFragment.newInstance());
+    }
+
     public void openOption(){
         openFragment(OptionFragment.newInstance());
     }

@@ -51,6 +51,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-database:19.2.1'
+    implementation 'com.google.firebase:firebase-storage:19.2.2'
+    implementation 'com.google.firebase:firebase-firestore:23.0.3'
+
+
     implementation 'com.google.zxing:core:3.4.1'
 
     def camerax_version = "1.0.1"
@@ -63,6 +67,8 @@ dependencies {
     // Firebase UI Library
     implementation("com.firebaseui:firebase-ui-auth:8.0.2")
     implementation("com.firebaseui:firebase-ui-database:8.0.2")
+    implementation 'com.firebaseui:firebase-ui-storage:7.2.0'
+
 
 
 }

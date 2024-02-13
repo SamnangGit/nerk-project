@@ -7,6 +7,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.example.nerk_project.databinding.FragmentChatBinding;
+import com.example.nerk_project.databinding.FragmentMemoryBinding;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +31,9 @@ public class MemoryFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+
+    FragmentMemoryBinding binding;
 
     public MemoryFragment() {
         // Required empty public constructor
@@ -59,11 +70,43 @@ public class MemoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_memory, container, false);
+        binding = FragmentMemoryBinding.inflate(inflater, container, false);
+        binding.sendButton.setOnClickListener(view -> openPostFeed());
+        binding.btnBack.setOnClickListener(view -> goBack());
+
+        return binding.getRoot();
+    }
+
+    public void openPostFeed(){
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.openPostFeed();
     }
 
     public static MemoryFragment newInstance() {
         MemoryFragment fragment = new MemoryFragment();
         return fragment;
     }
+
+    public void goBack(){
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.openOption();
+    }
+
+//    public void loadImage() {
+//        // Get a reference to the storage service, using the link to your Firebase storage
+//        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+//
+//        // Create a reference to the file you want to download
+//        StorageReference fileReference = storageReference.child("uploads/your_image.jpg");
+//
+//        // Create a reference to your ImageView
+//        ImageView imageView = findViewById(R.id..);
+//
+//        // Download the file using Glide
+//        Glide.with(this /* context */)
+//                .using(new FirebaseImageLoader())
+//                .load(fileReference)
+//                .into(imageView);
+//    }
+
 }
