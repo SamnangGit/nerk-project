@@ -113,7 +113,7 @@ public class HomeFragment extends Fragment {
         binding.btnSetting.setOnClickListener(view -> openSetting());
         binding.imgProfileHome.setOnClickListener(view -> changeProfile());
 
-
+        checkUser();
 //        binding.tcCount.setText(Integer.toString(getCount()));
 
         getCount();
@@ -559,6 +559,16 @@ public class HomeFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    private void checkUser(){
+        FirebaseAuth user = FirebaseAuth.getInstance();
+        String userID = user.getUid();
+        if(userID.equals("KexuveflI8bCQzKeN3zqnE7YjTU2")){
+            binding.imgProfileHome.setImageResource(R.drawable.avatar_girl);
+        }else if(userID.equals("HdzXXsZCuMYsMs66zvzL13n2naw2")){
+            binding.imgProfileHome.setImageResource(R.drawable.boy_eight_bit);
+        }
     }
 
 }

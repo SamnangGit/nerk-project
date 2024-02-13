@@ -106,7 +106,9 @@ public class ChatFragment extends Fragment {
                 TextView messageTime = v.findViewById(R.id.message_time);
 
                 messageText.setText(model.getMessageText());
-                messageUser.setText(model.getMessageUser());
+//                messageUser.setText(model.getMessageUser());
+                messageUser.setVisibility(View.GONE);
+
 
                 // Check if the message is from the current user
                 if (model.getMessageUser() != null && model.getMessageUser().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
@@ -115,7 +117,7 @@ public class ChatFragment extends Fragment {
                             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     params.gravity = Gravity.END;
                     messageText.setLayoutParams(params);
-                    messageUser.setLayoutParams(params);
+//                    messageUser.setLayoutParams(params);
                     messageTime.setLayoutParams(params);
                 } else {
                     // If no, align the text to the left (or default)
@@ -123,8 +125,9 @@ public class ChatFragment extends Fragment {
                             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     params.gravity = Gravity.START;
                     messageText.setLayoutParams(params);
-                    messageUser.setLayoutParams(params);
+//                    messageUser.setLayoutParams(params);
                     messageTime.setLayoutParams(params);
+
                 }
 
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
