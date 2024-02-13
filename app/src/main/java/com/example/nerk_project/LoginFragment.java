@@ -111,7 +111,7 @@ public class LoginFragment extends Fragment {
 
 //                            mainActivity().openHome();
                             mainActivity().openPairCode();
-                            mainActivity().openOption();
+//                            mainActivity().openOption();
 
                         } else {
                             Toast.makeText(mainActivity().getApplicationContext()

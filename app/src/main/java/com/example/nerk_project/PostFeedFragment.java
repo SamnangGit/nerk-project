@@ -94,6 +94,8 @@ public class PostFeedFragment extends Fragment {
         binding.btnPost.setOnClickListener(view -> saveImage());
         binding.btnBack.setOnClickListener(view -> goBack());
 
+        checkUser();
+
         return binding.getRoot();    }
 
 
@@ -200,5 +202,18 @@ public class PostFeedFragment extends Fragment {
         ContentResolver cR = getActivity().getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    private void checkUser(){
+        FirebaseAuth user = FirebaseAuth.getInstance();
+        String userID = user.getUid();
+        if(userID.equals("KexuveflI8bCQzKeN3zqnE7YjTU2")){
+            binding.memoryProfile.setImageResource(R.drawable.avatar_girl);
+            binding.memoryUser.setText("Kv");
+        }else if(userID.equals("HdzXXsZCuMYsMs66zvzL13n2naw2")){
+            binding.memoryProfile.setImageResource(R.drawable.boy_eight_bit);
+            binding.memoryUser.setText("Ps");
+        }
+
     }
 }

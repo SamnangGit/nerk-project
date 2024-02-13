@@ -26,6 +26,11 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -36,11 +41,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -92,7 +99,7 @@ public class MemoryFragment extends Fragment {
         binding = FragmentMemoryBinding.inflate(inflater, container, false);
         binding.btnGo.setOnClickListener(view -> openPostFeed());
         binding.btnBack.setOnClickListener(view -> goBack());
-
+        getRelationshipDays();
         populateView();
 
         return binding.getRoot();
@@ -171,6 +178,7 @@ public class MemoryFragment extends Fragment {
                 }
 
                 FeedModel model = getItem(position);
+                ImageView memoryProfile = convertView.findViewById(R.id.memory_profile);
                 TextView memoryUser = convertView.findViewById(R.id.memory_user);
                 TextView memoryCaption = convertView.findViewById(R.id.memory_caption);
                 ImageView memoryImage = convertView.findViewById(R.id.memory_image);
@@ -180,8 +188,10 @@ public class MemoryFragment extends Fragment {
                 if (memoryUser != null) {
                     if (model.getUserId().equals("KexuveflI8bCQzKeN3zqnE7YjTU2")) {
                         memoryUser.setText("Kv");
+                        memoryProfile.setImageResource(R.drawable.avatar_girl);
                     } else if (model.getUserId().equals("HdzXXsZCuMYsMs66zvzL13n2naw2")) {
                         memoryUser.setText("Ps");
+                        memoryProfile.setImageResource(R.drawable.boy_eight_bit);
                     }
                 }
                 if (memoryCaption != null) {
@@ -214,6 +224,55 @@ public class MemoryFragment extends Fragment {
             }
         };
     }
+
+
+    public void getRelationshipDays() {
+        // get a reference to the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        // get a reference to the "relationships" node
+        DatabaseReference ref = database.getReference("relationships");
+
+        // retrieve the relationship start date
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String startDateString = null;
+
+                // iterate over the children of the "relationships" node
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    startDateString = childSnapshot.getValue(String.class);
+                }
+
+                // parse the start date
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                try {
+                    Date startDate = sdf.parse(startDateString);
+
+                    // get the current date
+                    Date currentDate = new Date();
+
+                    // calculate the difference in days
+                    long diff = currentDate.getTime() - startDate.getTime();
+                    long relationshipDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+
+                    // convert the number of days in the relationship to a string
+                    String relationshipDaysString = String.valueOf(relationshipDays);
+
+                    binding.tvRelationship.setText(relationshipDaysString);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // handle error
+//                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
 
 
 

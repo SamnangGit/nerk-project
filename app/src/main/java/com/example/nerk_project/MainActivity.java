@@ -55,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
     public void openMemory(){
         openFragment(MemoryFragment.newInstance());
     }
+
+    public void openAnniversary(){
+        openFragment(AnniversaryFragment.newInstance());
+    }
     public  void openSetting(){openFragment(SettingFragment.newInstance());}
 
     private void openFragment(Fragment fragment){

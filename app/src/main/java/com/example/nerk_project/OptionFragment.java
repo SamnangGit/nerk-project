@@ -67,7 +67,7 @@ public class OptionFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentOptionBinding.inflate(getLayoutInflater(), container, false);
-        binding.btnLocation.setOnClickListener(view -> location());
+        binding.btnAnniversary.setOnClickListener(view -> anniversary());
         binding.btnChat.setOnClickListener(view -> chat());
         binding.btnMemory.setOnClickListener(view -> memory());
         binding.btnHome.setOnClickListener(view -> home());
@@ -105,6 +105,11 @@ public class OptionFragment extends Fragment {
         FirebaseAuth.getInstance().signOut();
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.openLogin();
+    }
+
+    public void anniversary(){
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.openAnniversary();
     }
 
 }
