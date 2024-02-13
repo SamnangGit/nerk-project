@@ -50,7 +50,7 @@
         android:id="@+id/imgBoy"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginTop="74dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="106dp"
         android:src="@drawable/boy_eight_bit"
         app:layout_constraintEnd_toEndOf="parent"
