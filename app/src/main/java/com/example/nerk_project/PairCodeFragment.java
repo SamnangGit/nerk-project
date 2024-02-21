@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -140,6 +141,8 @@ public class PairCodeFragment extends Fragment {
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(partnerUID);
             bufferedWriter.close();
+
+            Log.d("Partner UID set in local store", partnerUID);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -169,7 +172,6 @@ public class PairCodeFragment extends Fragment {
 //            redirect to home
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.openOption();
-            ;
 
 
         }

@@ -20,6 +20,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -89,7 +92,7 @@ public class ChatFragment extends Fragment {
     private void sendMessage() {
         databaseReference = FirebaseDatabase.getInstance().getReference("messages");
         databaseReference.push().setValue(new ChatModel(binding.input.getText().toString(),
-                FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+                FirebaseAuth.getInstance().getCurrentUser().getUid()));
         binding.input.setText("");
 
         FirebaseListOptions<ChatModel> options = new FirebaseListOptions.Builder<ChatModel>()
@@ -101,6 +104,13 @@ public class ChatFragment extends Fragment {
         adapter = new FirebaseListAdapter<ChatModel>(options) {
             @Override
             protected void populateView(View v, ChatModel model, int position) {
+
+                if (!model.getMessageUser().equals(retrievePartnerUID().trim()) && !model.getMessageUser().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                    ((ViewGroup) v).removeAllViews();
+
+                    return;
+                }
+
                 TextView messageText = v.findViewById(R.id.message_text);
                 TextView messageUser = v.findViewById(R.id.message_user);
                 TextView messageTime = v.findViewById(R.id.message_time);
@@ -111,7 +121,7 @@ public class ChatFragment extends Fragment {
 
 
                 // Check if the message is from the current user
-                if (model.getMessageUser() != null && model.getMessageUser().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                if (model.getMessageUser() != null && model.getMessageUser().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                     // If yes, align the text to the right
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -152,6 +162,13 @@ public class ChatFragment extends Fragment {
         adapter = new FirebaseListAdapter<ChatModel>(options) {
             @Override
             protected void populateView(View v, ChatModel model, int position) {
+
+                if (!model.getMessageUser().equals(retrievePartnerUID().trim()) && !model.getMessageUser().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                    ((ViewGroup) v).removeAllViews();
+
+                    return;
+                }
+
                 TextView messageText = v.findViewById(R.id.message_text);
                 TextView messageUser = v.findViewById(R.id.message_user);
                 TextView messageTime = v.findViewById(R.id.message_time);
@@ -160,18 +177,18 @@ public class ChatFragment extends Fragment {
                 Log.d("ChatFragment", "populateView: " + model.getMessageUser());
 
                 if (model.getMessageUser() != null) {
-                    if (model.getMessageUser().equals("phengsamnangsp@gmail.com") ) {
+                    if (model.getMessageUser().equals(retrievePartnerUID()) ) {
 //                        messageUser.setText("Kv");
                         messageUser.setVisibility(View.GONE);
 
-                    } else if (model.getMessageUser().equals("phengsamnangps@gmail.com")) {
+                    } else if (model.getMessageUser().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                         messageUser.setVisibility(View.GONE);
                     }
                 }
 
 
                 // Check if the message is from the current user
-                if (model.getMessageUser() != null && model.getMessageUser().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                if (model.getMessageUser() != null && model.getMessageUser().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                     // If yes, align the text to the right
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -213,5 +230,58 @@ public class ChatFragment extends Fragment {
         }else if(userID.equals("HdzXXsZCuMYsMs66zvzL13n2naw2")){
             binding.imgProfileHome.setImageResource(R.drawable.boy_eight_bit);
         }
+    }
+
+    public String retrievePartnerUID(){
+        try {
+            File file = new File(getContext().getFilesDir(), "partnerUID.txt");
+            FileReader fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            StringBuilder stringBuilder = new StringBuilder();
+            String line = bufferedReader.readLine();
+            while (line != null){
+                stringBuilder.append(line).append("\n");
+                line = bufferedReader.readLine();
+            }
+            bufferedReader.close();
+            String response = stringBuilder.toString();
+
+            Log.d("Builder: ", response);
+
+            // Remove invalid characters
+            response = response.replace(".", "")
+                    .replace("$", "")
+                    .replace("[", "")
+                    .replace("]", "")
+                    .replace("#", "")
+                    .replace("/", "");
+
+            int count = 0;
+
+            for (int i = 0; i < response.length(); i++) {
+
+                // Checking the character for not being a
+                // letter,digit or space
+                if (!Character.isDigit(response.charAt(i))
+                        && !Character.isLetter(response.charAt(i))
+                        && !Character.isWhitespace(response.charAt(i))) {
+                    // Incrementing the countr for spl
+                    // characters by unity
+                    count++;
+                }
+            }
+
+            // When there is no special character encountered
+            if (count == 0)
+                Log.d("specialChar", "No Special Characters found.");
+            else
+                Log.d("specialChar", "Special Characters found.");
+
+            Log.d("response: ", response);
+            return response;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

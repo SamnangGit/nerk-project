@@ -43,6 +43,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -162,6 +165,11 @@ public class MemoryFragment extends Fragment {
                 for (DocumentSnapshot doc : snapshots) {
                     try {
                         FeedModel model = doc.toObject(FeedModel.class);
+
+                        if (!model.getUserId().equals(retrievePartnerUID().trim()) && !model.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) ){
+                            continue;
+                        }
+
                         feedModels.add(model);
                     } catch (RuntimeException ex) {
                         Log.w("Error deserialize", "Error deserializing document " + doc.getId(), ex);
@@ -197,11 +205,11 @@ public class MemoryFragment extends Fragment {
 
 
                 if (memoryUser != null) {
-                    if (model.getUserId().equals("KexuveflI8bCQzKeN3zqnE7YjTU2")) {
-                        memoryUser.setText("Kv");
+                    if (model.getUserId().equals(retrievePartnerUID().trim())) {
+                        memoryUser.setText("Partner");
                         memoryProfile.setImageResource(R.drawable.avatar_girl);
-                    } else if (model.getUserId().equals("HdzXXsZCuMYsMs66zvzL13n2naw2")) {
-                        memoryUser.setText("Ps");
+                    } else if (model.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        memoryUser.setText("You");
                         memoryProfile.setImageResource(R.drawable.boy_eight_bit);
                     }
                 }
@@ -293,6 +301,59 @@ public class MemoryFragment extends Fragment {
         });
     }
 
+
+    public String retrievePartnerUID(){
+        try {
+            File file = new File(getContext().getFilesDir(), "partnerUID.txt");
+            FileReader fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            StringBuilder stringBuilder = new StringBuilder();
+            String line = bufferedReader.readLine();
+            while (line != null){
+                stringBuilder.append(line).append("\n");
+                line = bufferedReader.readLine();
+            }
+            bufferedReader.close();
+            String response = stringBuilder.toString();
+
+            Log.d("Builder: ", response);
+
+            // Remove invalid characters
+            response = response.replace(".", "")
+                    .replace("$", "")
+                    .replace("[", "")
+                    .replace("]", "")
+                    .replace("#", "")
+                    .replace("/", "");
+
+            int count = 0;
+
+            for (int i = 0; i < response.length(); i++) {
+
+                // Checking the character for not being a
+                // letter,digit or space
+                if (!Character.isDigit(response.charAt(i))
+                        && !Character.isLetter(response.charAt(i))
+                        && !Character.isWhitespace(response.charAt(i))) {
+                    // Incrementing the countr for spl
+                    // characters by unity
+                    count++;
+                }
+            }
+
+            // When there is no special character encountered
+            if (count == 0)
+                Log.d("specialChar", "No Special Characters found.");
+            else
+                Log.d("specialChar", "Special Characters found.");
+
+            Log.d("response: ", response);
+            return response;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
 }

@@ -93,7 +93,8 @@ public class RegisterFragment extends Fragment {
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(mainActivity().getApplicationContext()
                                     , user.getEmail(), Toast.LENGTH_SHORT).show();
-                            mainActivity().openHome();
+//                            mainActivity().openHome();
+                            mainActivity().openPairCode();
                         } else {
                             Toast.makeText(mainActivity().getApplicationContext()
                                     , "Failed", Toast.LENGTH_SHORT).show();

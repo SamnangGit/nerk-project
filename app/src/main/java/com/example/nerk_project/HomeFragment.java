@@ -107,6 +107,8 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        String partnerUid = retrievePartnerUID();
+//        Log.d("UUID: ", partnerUid);
         binding = FragmentHomeBinding.inflate(getLayoutInflater(), container, false);
         binding.btnOption.setOnClickListener(view -> goOption());
         binding.btnSet.setOnClickListener(view -> todoOperation());
@@ -125,7 +127,7 @@ public class HomeFragment extends Fragment {
         // 2- Data source
         dataModels = new ArrayList<>();
 
-//        retrieveFirebaseData(dataModels);
+//        retrieveFirebaseDeata(dataModels);
 //        getFirebaseData();
         fecthData(dataModels);
         Log.d("dataModel", "amount");
@@ -384,7 +386,7 @@ public class HomeFragment extends Fragment {
 
     public String retrievePartnerUID(){
         try {
-            File file = new File(getContext().getFilesDir(), "partnerUID.json");
+            File file = new File(getContext().getFilesDir(), "partnerUID.txt");
             FileReader fileReader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             StringBuilder stringBuilder = new StringBuilder();
@@ -395,6 +397,8 @@ public class HomeFragment extends Fragment {
             }
             bufferedReader.close();
             String response = stringBuilder.toString();
+
+            Log.d("Builder: ", response);
 
             // Remove invalid characters
             response = response.replace(".", "")
@@ -425,6 +429,7 @@ public class HomeFragment extends Fragment {
             else
                 Log.d("specialChar", "Special Characters found.");
 
+            Log.d("response: ", response);
             return response;
         }catch (Exception e){
             e.printStackTrace();
@@ -438,26 +443,41 @@ public class HomeFragment extends Fragment {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
-        Log.d("uid", uid);
+//        Log.d("uid", uid);
 
-//        String partnerUID = retrievePartnerUID();
-        String partnerUid = "";
+        String partnerUid = retrievePartnerUID();
+//        String partnerUid = "";
 //        String partnerUID = "";
 //        Log.d("partnerUID", partnerUID);
 //        Log.d("partnerUIDType", partnerUID.getClass().getName());
 
+//        String pUID = "KexuveflI8bCQzKeN3zqnE7YjTU2";
+//        String rUID = retrievePartnerUID();
+//        rUID.replaceAll("\\s", "");
 
-        if(uid.equals("HdzXXsZCuMYsMs66zvzL13n2naw2")){
-            partnerUid = "KexuveflI8bCQzKeN3zqnE7YjTU2";
-        }else if(uid.equals("KexuveflI8bCQzKeN3zqnE7YjTU2")){
-            partnerUid = "HdzXXsZCuMYsMs66zvzL13n2naw2";
-        }
+//        if(pUID.trim().equals(rUID.trim())){
+//            Log.d("EQUAL", "EQUAL");
+//        }else {
+//            Log.d("pUID", pUID);
+//            Log.d("rUID", rUID);
+//            Log.d("NOT EQUAL", "NOT EQUAL");
+//        }
+
+
+
+//        if(uid.equals("HdzXXsZCuMYsMs66zvzL13n2naw2")){
+//            partnerUid = "KexuveflI8bCQzKeN3zqnE7YjTU2";
+//        }else if(uid.equals("KexuveflI8bCQzKeN3zqnE7YjTU2")){
+//            partnerUid = "HdzXXsZCuMYsMs66zvzL13n2naw2";
+//        }
+
+
 
 
         database = FirebaseDatabase.getInstance();
         database.getReference()
                 .child("users")
-                .child(partnerUid)
+                .child(partnerUid.trim())
                 .child("123456")
                 .child("todos")
                 .get()
@@ -541,21 +561,22 @@ public class HomeFragment extends Fragment {
                             Log.e("firebase", "Error getting data", task.getException());
                         }else{
                             Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                            int count = Integer.parseInt(String.valueOf(task.getResult().getValue()));
-                            int pbCount = count % 10;
+                            if(task.getResult().getValue() != null){
+                                int count = Integer.parseInt(String.valueOf(task.getResult().getValue()));
+                                int pbCount = count % 10;
 
-                            binding.tcCount.setText(Integer.toString(count));
-                            binding.progressBar.setProgress(pbCount);
-                            if(count >= 10){
-                                binding.imageViewCircleTwo.setImageResource(R.drawable.circle_shape);
-                                if(count >= 30){
-                                    binding.imageViewRectangle.setImageResource(R.drawable.rectangle_shape);
-                                    if(count >= 40){
-                                        binding.imageViewCircleOne.setImageResource(R.drawable.circle_shape);
+                                binding.tcCount.setText(Integer.toString(count));
+                                binding.progressBar.setProgress(pbCount);
+                                if(count >= 10){
+                                    binding.imageViewCircleTwo.setImageResource(R.drawable.circle_shape);
+                                    if(count >= 30){
+                                        binding.imageViewRectangle.setImageResource(R.drawable.rectangle_shape);
+                                        if(count >= 40){
+                                            binding.imageViewCircleOne.setImageResource(R.drawable.circle_shape);
+                                        }
                                     }
                                 }
                             }
-
                         }
                     }
                 });
